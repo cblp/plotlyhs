@@ -9,11 +9,11 @@ Description:
 License:             MIT
 License-file:        LICENSE
 Author:              Tom Nielsen
-Maintainer:          tanielsen@gmail.com
+Maintainer:          jonathan@jonreeve.com
 build-type:          Simple
 Cabal-Version: 	     >= 1.10
-homepage:            https://github.com/diffusionkinetics/open/plotlyhs
-bug-reports:         https://github.com/diffusionkinetics/open/issues
+homepage:            https://github.com/JonathanReeve/plotlyhs
+bug-reports:         https://github.com/diffusionkinetics/open/plotlyhs/open/issues
 category:            Graphics, Charts
 Tested-With:         GHC == 7.8.4, GHC == 7.10.2, GHC == 7.10.3, GHC == 8.0.1
 
