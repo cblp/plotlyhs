@@ -39,10 +39,8 @@ see Graphics.Plotly.Lucid for helper functions that turn traces into HTML.
 module Graphics.Plotly.Base where
 
 import Data.Aeson
-import Data.Aeson.Types
 import Data.Char (toLower)
-import Data.List (intercalate, nub, findIndex)
-import Data.Monoid ((<>))
+import Data.List (intercalate, nub, elemIndex)
 import Data.Maybe (fromJust)
 import Data.Text (Text)
 
@@ -97,7 +95,7 @@ instance ToJSON Color where
 catColors :: Eq a => [a] -> ListOrElem Value
 catColors xs =
   let vals = nub xs
-      f x = fromJust $ findIndex (==x) vals
+      f x = fromJust $ elemIndex x vals
   in List $ map (toJSON . ColIx . f) xs
 
 -- | Different types of markers
@@ -203,7 +201,7 @@ data HoverInfo = HoverPlus [HoverElem] | HoverAll | HoverNone | HoverSkip
   deriving (Generic, Show)
 
 instance ToJSON HoverInfo where
-  toJSON (HoverPlus elems) = toJSON . intercalate "+" $ (map toLower . dropInitial "Hover" . show) <$> elems
+  toJSON (HoverPlus elems) = toJSON . intercalate "+" $ map toLower . dropInitial "Hover" . show <$> elems
   toJSON x                 = toJSON . map toLower . dropInitial "Hover" $ show x
 
 data HoverMode = X | Y | Closest | False | XUnified | YUnified
@@ -212,7 +210,7 @@ instance ToJSON HoverMode where
   toJSON mode = toJSON ( showMode mode ) where
    showMode :: HoverMode -> Value
    showMode m = case m of
-     X -> "x" 
+     X -> "x"
      Y -> "y"
      Closest -> "closest"
      Graphics.Plotly.Base.False -> "False"
@@ -286,7 +284,7 @@ mkTrace tt = Trace Nothing Nothing Nothing Nothing Nothing Nothing Nothing Nothi
 
 -- TODO: there must be a way to avoid all that nothing. Something like this?
 -- mkTrace :: TraceType -> Trace
--- mkTrace tt = Trace { _tracetype = tt 
+-- mkTrace tt = Trace { _tracetype = tt
 
 -- |an empty scatter plot
 scatter :: Trace

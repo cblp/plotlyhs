@@ -6,11 +6,14 @@ Simple histograms
 
 module Graphics.Plotly.Histogram where
 
+import Prelude hiding (head)
 import Graphics.Plotly.Base hiding (sort)
-import Data.List (sort, group)
+import Data.List (sort)
+import Data.List.NonEmpty (group)
 import Lens.Micro
 import Data.Aeson (toJSON)
 import Data.Text (Text)
+import Data.Foldable1 (head)
 
 -- | build a histogram with a given binsize
 histogram :: Int -- ^ number of bins
@@ -28,7 +31,7 @@ histogram nbins pts =
 
 histMany :: Int -> [(Text, [Double])] -> [Trace]
 histMany nbins hdata =
-  let allPts = concat $ map snd hdata
+  let allPts = concatMap snd hdata
       (lo, hi) = (minimum allPts, maximum allPts)
       binSize = (hi - lo) / realToFrac nbins
       binToX :: Int -> Double

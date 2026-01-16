@@ -1,8 +1,8 @@
-{-# LANGUAGE DeriveGeneric, OverloadedStrings,FlexibleInstances, TemplateHaskell #-}
+{-# LANGUAGE FlexibleInstances #-}
 
 {-|
 
-Re-exports the Simple interface, the grammar of grpahics 
+Re-exports the Simple interface, the grammar of graphics
 interface and parts of the base interface.
 
 -}
@@ -13,7 +13,7 @@ module Graphics.Plotly (
   module GoG
 ) where
 
-import Graphics.Plotly.Base as Base 
+import Graphics.Plotly.Base as Base
   hiding (x,y, z, _x, _y, _z, _size, _line, size, line)
 import Graphics.Plotly.Simple as Simple
 import Graphics.Plotly.GoG as GoG
