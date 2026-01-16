@@ -261,7 +261,8 @@ instance (Show a) => ToJSON (PlusSet a) where
 
 -- | A `Trace` is the component of a plot. Multiple traces can be superimposed.
 data Trace = Trace
-  { _x :: Maybe [Value] -- ^ x values, as numbers
+  { _automargin :: Maybe Bool
+  , _x :: Maybe [Value] -- ^ x values, as numbers
   , _y :: Maybe [Value] -- ^ y values, as numbers
   , _z :: Maybe [Value] -- ^ z values, as numbers
   , _values :: Maybe [Value] -- values for pie chart
@@ -310,7 +311,8 @@ makeLenses ''Trace
 mkTrace :: TraceType -> Trace
 mkTrace _tracetype =
   Trace
-    { _x = Nothing
+    { _automargin = Nothing
+    , _x = Nothing
     , _y = Nothing
     , _z = Nothing
     , _values = Nothing
