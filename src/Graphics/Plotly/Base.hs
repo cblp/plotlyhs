@@ -1,4 +1,8 @@
-{-# LANGUAGE DeriveGeneric, OverloadedStrings,FlexibleInstances, TemplateHaskell #-}
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE NamedFieldPuns #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell #-}
 
 {-|
 
@@ -40,10 +44,10 @@ module Graphics.Plotly.Base where
 
 import Data.Aeson
 import Data.Char (toLower)
-import Data.List (intercalate, nub, elemIndex)
+import Data.List (elemIndex, intercalate, nub)
 import Data.Maybe (fromJust)
 import Data.Text (Text)
-
+import qualified Data.Text as Text
 import GHC.Generics
 import Lens.Micro.TH
 
@@ -223,6 +227,9 @@ data HoverOn = HoverPoints | HoverFills deriving (Generic, Show)
 instance {-# OVERLAPS #-} ToJSON [HoverOn] where
   toJSON = toJSON . intercalate "+" . map (map toLower . dropInitial "Hover" . show)
 
+data TextInfo = Label | Text | Value | Percent
+  deriving (Eq, Show)
+
 data TextPosition
   =
     -- | for icicle, scatter, scatter3d, scattercarpet, scattergeo, scattergl,
@@ -240,6 +247,13 @@ data TextPosition
 instance ToJSON TextPosition where
   toJSON = toJSON . camelTo2 ' ' . show
 
+-- | Semantically a set, but encoded as a string with "+" between items
+newtype PlusSet a = PlusSet [a]
+
+instance (Show a) => ToJSON (PlusSet a) where
+  toJSON (PlusSet items) =
+    String $ Text.intercalate "+" $ map (Text.pack . show) items
+
 -- | A `Trace` is the component of a plot. Multiple traces can be superimposed.
 data Trace = Trace
   { _x :: Maybe [Value] -- ^ x values, as numbers
@@ -251,6 +265,7 @@ data Trace = Trace
   , _mode :: Maybe [Mode] -- ^ select one or two modes.
   , _name :: Maybe Text -- ^ name of this trace, for legend
   , _text :: Maybe [Text]
+  , _textinfo :: PlusSet TextInfo
   , _textposition :: Maybe TextPosition
   , _tracetype :: TraceType
   , _marker :: Maybe Marker
@@ -288,7 +303,43 @@ data Trace = Trace
 makeLenses ''Trace
 
 mkTrace :: TraceType -> Trace
-mkTrace tt = Trace Nothing Nothing Nothing Nothing Nothing Nothing Nothing Nothing Nothing Nothing tt Nothing Nothing Nothing Nothing Nothing Nothing Nothing Nothing Nothing Nothing Nothing Nothing Nothing Nothing Nothing Nothing Nothing Nothing Nothing Nothing Nothing Nothing
+mkTrace _tracetype =
+  Trace
+    { _x = Nothing
+    , _y = Nothing
+    , _z = Nothing
+    , _values = Nothing
+    , _labels = Nothing
+    , _hole = Nothing
+    , _mode = Nothing
+    , _name = Nothing
+    , _text = Nothing
+    , _textinfo = PlusSet []
+    , _textposition = Nothing
+    , _tracetype
+    , _marker = Nothing
+    , _line = Nothing
+    , _fill = Nothing
+    , _orientation = Nothing
+    , _visible = Nothing
+    , _traceshowlegend = Nothing
+    , _legendgroup = Nothing
+    , _customdata = Nothing
+    , _hoverinfo = Nothing
+    , _hovertext = Nothing
+    , _hoveron = Nothing
+    , _connectgaps = Nothing
+    , _stackgroup = Nothing
+    , _fillcolor = Nothing
+    , _sort = Nothing
+    , _i = Nothing
+    , _j = Nothing
+    , _k = Nothing
+    , _tracecolor = Nothing
+    , _traceopacity = Nothing
+    , _tracexaxis = Nothing
+    , _traceyaxis = Nothing
+    }
 
 -- TODO: there must be a way to avoid all that nothing. Something like this?
 -- mkTrace :: TraceType -> Trace
