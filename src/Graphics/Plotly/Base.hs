@@ -227,6 +227,7 @@ data TextPosition
   = TopLeft    | TopCenter    | TopRight
   | MiddleLeft | MiddleCenter | MiddleRight
   | BottomLeft | BottomCenter | BottomRight
+  | Inside | Outside
   deriving (Generic, Show)
 
 instance ToJSON TextPosition where
