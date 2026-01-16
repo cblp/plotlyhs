@@ -90,51 +90,68 @@ aes :: Aes ((), (), (), (), ()) a
 aes = Aes (const ()) (const ()) (const ()) Nothing Nothing
 
 
-setx :: (AxisValue v)
-    => Aes (vx,vy,vz,vc,vs) a -> (a -> v) -> Aes (v, vy, vz, vc, vs) a
+setx :: Aes (vx,vy,vz,vc,vs) a -> (a -> v) -> Aes (v, vy, vz, vc, vs) a
 setx (Aes _ fy fz fc fs) f = Aes f fy fz fc fs
 
 
-x :: (AxisValue v)
-    => Lens (Aes (vx,vy, vz, vc, vs) a) (Aes (v,vy, vz, vc, vs) a) (a -> vx) (a -> v)
+x ::
+    Lens
+        (Aes (vx, vy, vz, vc, vs) a)
+        (Aes (v, vy, vz, vc, vs) a)
+        (a -> vx)
+        (a -> v)
 x = lens _x setx
 
 
-sety :: (AxisValue v)
-    => Aes (vx,vy, vz, vc, vs) a -> (a -> v) -> Aes (vx, v, vz, vc, vs) a
+sety :: Aes (vx,vy, vz, vc, vs) a -> (a -> v) -> Aes (vx, v, vz, vc, vs) a
 sety (Aes fx _ fz fc fs) f = Aes fx f fz fc fs
 
 
-y :: (AxisValue v)
-    => Lens (Aes (vx,vy, vz, vc, vs) a) (Aes (vx,v, vz, vc, vs) a) (a -> vy) (a -> v)
+y ::
+    Lens
+        (Aes (vx, vy, vz, vc, vs) a)
+        (Aes (vx, v, vz, vc, vs) a)
+        (a -> vy)
+        (a -> v)
 y = lens _y sety
 
-setz :: (AxisValue v)
-    => Aes (vx,vy, vz, vc, vs) a -> (a -> v) -> Aes (vx, vy, v, vc, vs) a
+setz :: Aes (vx,vy, vz, vc, vs) a -> (a -> v) -> Aes (vx, vy, v, vc, vs) a
 setz (Aes fx fy _ fc fs) f = Aes fx fy f fc fs
 
 
-z :: (AxisValue v)
-    => Lens (Aes (vx,vy, vz, vc, vs) a) (Aes (vx,vy, v, vc, vs) a) (a -> vz) (a -> v)
+z ::
+    Lens
+        (Aes (vx, vy, vz, vc, vs) a)
+        (Aes (vx, vy, v, vc, vs) a)
+        (a -> vz)
+        (a -> v)
 z = lens _z setz
 
-setcol :: (IsColor v)
-    => Aes (vx,vy, vz, vc, vs) a -> Maybe (a -> v) -> Aes (vx, vy, vz, v, vs) a
+setcol ::
+    Aes (vx,vy, vz, vc, vs) a -> Maybe (a -> v) -> Aes (vx, vy, vz, v, vs) a
 setcol (Aes fx fy fz _ fs) f = Aes fx fy fz f fs
 
 
-color :: (IsColor v)
-    => Lens (Aes (vx,vy, vz, vc, vs) a) (Aes (vx,vy,vz, v,vs) a) (Maybe (a -> vc)) (Maybe (a -> v))
+color ::
+    Lens
+        (Aes (vx, vy, vz, vc, vs) a)
+        (Aes (vx, vy, vz, v, vs) a)
+        (Maybe (a -> vc))
+        (Maybe (a -> v))
 color = lens _color setcol
 
 
-setsize :: (AxisValue v, Num v)
-    => Aes (vx,vy, vz, vc, vs) a -> Maybe (a -> v) -> Aes (vx, vy, vz, vc, v) a
+setsize ::
+    Aes (vx,vy, vz, vc, vs) a -> Maybe (a -> v) -> Aes (vx, vy, vz, vc, v) a
 setsize (Aes fx fy fz fc _) = Aes fx fy fz fc
 
 
-size :: (AxisValue v, Num v)
-    => Lens (Aes (vx,vy, vz, vc, vs) a) (Aes (vx,vy,vz, vc,v) a) (Maybe (a -> vs)) (Maybe (a -> v))
+size ::
+    Lens
+        (Aes (vx, vy, vz, vc, vs) a)
+        (Aes (vx, vy, vz, vc, v) a)
+        (Maybe (a -> vs))
+        (Maybe (a -> v))
 size = lens _size setsize
 
 
@@ -160,10 +177,7 @@ line a xs = Plot.scatter & Plot.x ?~ map (toJSON . _x a) xs
 -- | Render an Aes (styling header) <a> and data <xs> into a `Plot.Trace box`
 -- e.g. `hbox myAes [1,1,4,5,6,9,9]`
 --
-hbox  :: (AxisValue (XVal t), Num (XVal t))
-      => Aes t a
-      -> [a]
-      -> Plot.Trace
+hbox :: (AxisValue (XVal t)) => Aes t a -> [a] -> Plot.Trace
 hbox a xs = Plot.box
           & Plot.x    ?~ map (toJSON . _x a) xs
           & Plot.mode ?~ [Plot.Lines]
@@ -171,10 +185,7 @@ hbox a xs = Plot.box
 -- | Render an Aes (styling header) <a> and data <ys> into a `Plot.Trace box`
 -- e.g. `vbox myAes [1,1,4,5,6,9,9]`
 --
-vbox  :: (AxisValue (YVal t), Num (YVal t))
-      => Aes t a
-      -> [a]
-      -> Plot.Trace
+vbox :: (AxisValue (YVal t)) => Aes t a -> [a] -> Plot.Trace
 vbox a ys = Plot.box
           & Plot.y    ?~ map (toJSON . _y a) ys
           & Plot.mode ?~ [Plot.Lines]

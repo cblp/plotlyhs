@@ -23,7 +23,6 @@ import Text.Blaze
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
 import Graphics.Plotly.Base
-import Data.Monoid ((<>))
 import Data.Text.Encoding (decodeUtf8)
 import Data.ByteString.Lazy (toStrict)
 import Data.Aeson
