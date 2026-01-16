@@ -267,7 +267,7 @@ data Trace = Trace
   , _mode :: Maybe [Mode] -- ^ select one or two modes.
   , _name :: Maybe Text -- ^ name of this trace, for legend
   , _text :: Maybe [Text]
-  , _textinfo :: PlusSet TextInfo
+  , _textinfo :: Maybe (PlusSet TextInfo)
   , _textposition :: Maybe TextPosition
   , _tracetype :: TraceType
   , _marker :: Maybe Marker
@@ -316,7 +316,7 @@ mkTrace _tracetype =
     , _mode = Nothing
     , _name = Nothing
     , _text = Nothing
-    , _textinfo = PlusSet []
+    , _textinfo = Nothing
     , _textposition = Nothing
     , _tracetype
     , _marker = Nothing
