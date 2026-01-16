@@ -224,11 +224,16 @@ instance {-# OVERLAPS #-} ToJSON [HoverOn] where
   toJSON = toJSON . intercalate "+" . map (map toLower . dropInitial "Hover" . show)
 
 data TextPosition
-  -- for scatter, scattergl
-  = TopLeft    | TopCenter    | TopRight
+  =
+    -- | for icicle, scatter, scatter3d, scattercarpet, scattergeo, scattergl,
+    -- scattermap, scattermapbox, scatterpolar, scatterpolargl, scattersmith,
+    -- scatterternary, treemap, layout.map.layers[].symbol,
+    -- layout.mapbox.layers[].symbol
+    TopLeft    | TopCenter    | TopRight
   | MiddleLeft | MiddleCenter | MiddleRight
   | BottomLeft | BottomCenter | BottomRight
-  -- for bar
+    -- | for bar, funnel, funnelarea (only 'Inside' and 'None'), histogram, pie,
+    -- waterfall
   | Inside | Outside | Auto | None
   deriving (Generic, Show)
 
