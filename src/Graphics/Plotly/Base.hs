@@ -252,7 +252,9 @@ newtype PlusSet a = PlusSet [a]
 
 instance (Show a) => ToJSON (PlusSet a) where
   toJSON (PlusSet items) =
-    String $ Text.intercalate "+" $ map (Text.pack . show) items
+    case items of
+      [] -> "none"
+      _ : _ -> String $ Text.intercalate "+" $ map (Text.pack . show) items
 
 -- | A `Trace` is the component of a plot. Multiple traces can be superimposed.
 data Trace = Trace
