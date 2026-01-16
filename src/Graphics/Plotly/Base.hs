@@ -224,10 +224,12 @@ instance {-# OVERLAPS #-} ToJSON [HoverOn] where
   toJSON = toJSON . intercalate "+" . map (map toLower . dropInitial "Hover" . show)
 
 data TextPosition
+  -- for scatter, scattergl
   = TopLeft    | TopCenter    | TopRight
   | MiddleLeft | MiddleCenter | MiddleRight
   | BottomLeft | BottomCenter | BottomRight
-  | Inside | Outside
+  -- for bar
+  | Inside | Outside | Auto | None
   deriving (Generic, Show)
 
 instance ToJSON TextPosition where
