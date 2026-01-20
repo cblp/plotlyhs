@@ -1,5 +1,6 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell #-}
@@ -47,9 +48,7 @@ import Data.Char (toLower)
 import Data.List (elemIndex, intercalate, nub)
 import Data.Maybe (fromJust)
 import Data.Text (Text)
-import qualified Data.Text as Text
 import GHC.Generics
-import Lens.Micro (Lens', lens)
 import Lens.Micro.TH
 
 import Graphics.Plotly.Utils
@@ -248,17 +247,10 @@ data TextPosition
 instance ToJSON TextPosition where
   toJSON = toJSON . camelTo2 ' ' . show
 
--- | Semantically a set, but encoded as a string with "+" between items
-newtype PlusSet a = PlusSet [a]
-
-instance (Show a) => ToJSON (PlusSet a) where
-  toJSON (PlusSet items) =
-    case items of
-      [] -> "none"
-      _ : _ ->
-        String $
-          Text.intercalate "+" $
-            map (Text.pack . camelTo2 '_' . show) items
+instance {-# OVERLAPS #-} ToJSON [TextInfo] where
+  toJSON = \case
+    [] -> "none"
+    items -> toJSON $ intercalate "+" $ map (map toLower . show) items
 
 -- | A `Trace` is the component of a plot. Multiple traces can be superimposed.
 data Trace = Trace
@@ -272,7 +264,7 @@ data Trace = Trace
   , _mode :: Maybe [Mode] -- ^ select one or two modes.
   , _name :: Maybe Text -- ^ name of this trace, for legend
   , _text :: Maybe [Text]
-  , _textinfo_ :: Maybe (PlusSet TextInfo)
+  , _textinfo :: Maybe [TextInfo]
   , _textposition :: Maybe TextPosition
   , _tracetype :: TraceType
   , _marker :: Maybe Marker
@@ -309,9 +301,6 @@ data Trace = Trace
 
 makeLenses ''Trace
 
-textinfo :: Lens' Trace (Maybe [TextInfo])
-textinfo = textinfo_ . lens (fmap $ \(PlusSet s) -> s) (\_ -> fmap PlusSet)
-
 mkTrace :: TraceType -> Trace
 mkTrace _tracetype =
   Trace
@@ -325,7 +314,7 @@ mkTrace _tracetype =
     , _mode = Nothing
     , _name = Nothing
     , _text = Nothing
-    , _textinfo_ = Nothing
+    , _textinfo = Nothing
     , _textposition = Nothing
     , _tracetype
     , _marker = Nothing
