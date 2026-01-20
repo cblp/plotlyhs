@@ -158,7 +158,7 @@ defMarker  = Marker Nothing Nothing Nothing Nothing Nothing Nothing Nothing Noth
 
 
 -- | Dash type specification
-data Dash = Solid | Dashdot | Dot deriving Show
+data Dash = Solid | Dashdot | Dot deriving (Eq, Show)
 
 instance ToJSON Dash where
   toJSON = toJSON . map toLower . show
@@ -177,7 +177,7 @@ instance ToJSON Fill where
   toJSON = toJSON . map toLower . dropInitial "Fill" . show
 
 
-data LineShape = Linear | Spline | Hv | Hvh | Vh | Vhv deriving Show
+data LineShape = Linear | Spline | Hv | Hvh | Vh | Vhv deriving (Eq, Show)
 
 instance ToJSON LineShape where
   toJSON = toJSON . map toLower . show
@@ -188,7 +188,7 @@ data Line = Line
   , _linecolor :: Maybe Color
   , _lineshape :: Maybe LineShape
   , _dash :: Maybe Dash
-  } deriving Generic
+  } deriving (Eq, Generic)
 
 makeLenses ''Line
 
@@ -384,7 +384,7 @@ instance ToJSON Trace where
   toJSON = genericToJSON jsonOptions {fieldLabelModifier = renamer}
     where renamer = dropInitial "trace" . unLens
 
-data AxisType = Log | Date | Category deriving Show
+data AxisType = Log | Date | Category deriving (Eq, Show)
 
 instance ToJSON AxisType where
   toJSON = toJSON . map toLower . show
@@ -400,7 +400,7 @@ data Axis = Axis
   , _tickvals :: Maybe [Value]
   , _ticktext :: Maybe [Text]
   , _domain :: Maybe (Double,Double)
-  } deriving Generic
+  } deriving (Eq, Generic)
 
 makeLenses ''Axis
 
