@@ -49,6 +49,7 @@ import Data.Maybe (fromJust)
 import Data.Text (Text)
 import qualified Data.Text as Text
 import GHC.Generics
+import Lens.Micro (Lens', lens)
 import Lens.Micro.TH
 
 import Graphics.Plotly.Utils
@@ -271,7 +272,7 @@ data Trace = Trace
   , _mode :: Maybe [Mode] -- ^ select one or two modes.
   , _name :: Maybe Text -- ^ name of this trace, for legend
   , _text :: Maybe [Text]
-  , _textinfo :: Maybe (PlusSet TextInfo)
+  , _textinfo_ :: Maybe (PlusSet TextInfo)
   , _textposition :: Maybe TextPosition
   , _tracetype :: TraceType
   , _marker :: Maybe Marker
@@ -308,6 +309,9 @@ data Trace = Trace
 
 makeLenses ''Trace
 
+textinfo :: Lens' Trace (Maybe [TextInfo])
+textinfo = textinfo_ . lens (fmap $ \(PlusSet s) -> s) (\_ -> fmap PlusSet)
+
 mkTrace :: TraceType -> Trace
 mkTrace _tracetype =
   Trace
@@ -321,7 +325,7 @@ mkTrace _tracetype =
     , _mode = Nothing
     , _name = Nothing
     , _text = Nothing
-    , _textinfo = Nothing
+    , _textinfo_ = Nothing
     , _textposition = Nothing
     , _tracetype
     , _marker = Nothing
